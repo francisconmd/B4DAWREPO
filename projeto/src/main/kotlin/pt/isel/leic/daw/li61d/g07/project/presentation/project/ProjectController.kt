@@ -9,5 +9,14 @@ class ProjectController(private val service: ProjectService) {
     fun getAllProjects() {
         service.getAllProjects()
     }
-}
 
+    @GetMapping(value=["/{projectName}"])
+    fun getProject(@PathVariable projectName : String) : ProjectResult {
+        return ProjectResult(projectName,"teste1")
+    }
+
+    @PutMapping
+    fun createProject(@RequestBody project: ProjectCreator) {
+
+    }
+}
