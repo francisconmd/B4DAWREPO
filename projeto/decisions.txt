@@ -1,0 +1,197 @@
+-----------------------------------------------------------
+			RESOURCES
+-----------------------------------------------------------
+- Project
+- Project Issue
+- Issue State
+- Issue Comments
+-----------------------------------------------------------
+		DOMAIN AND FUNCTIONALITY
+-----------------------------------------------------------
+A project is a long-running development activity, such as "DAW Project" or "LS Project". It is characterized by:
+- An unique name.
+- A short description.
+- An issue is a task that needs to be done in the context of a project, such as adding a new functionality, resolve an error, add a test, create a final release. 
+
+An issue always exists in the context of a project. It is characterized by:
+- An unique identifier.
+- A name.
+- A short description.
+- A creation date and an optional close date.
+- A set of labels, such as defect, new-functionality, or exploration.
+- An issue has a state. The set of available states and the set of possible transitions between states is configurable per project.
+
+The set of available states must include the closed and archived states. It should always be possible to transition from the closed to the archived state.
+
+The set of available states must also define a single start state.
+
+An issue has a sequence of issue comments, ordered in chronological order. A comment is characterized by a short text. A comment cannot be added to an archived issue.
+
+Issues can have zero or more labels. The set of allowed labels is defined per project.
+-----------------------------------------------------------
+	  		WEB API
+-----------------------------------------------------------
+Request:
+/api/projects -> 
+    % Get all projects
+    GET - /api/projects  
+
+Response:
+{
+    "collection": {
+        "version": "1.0",
+        "href": "/api/projects",
+        "items": [
+            {
+                "href": "/api/projects/{id1}",
+                "data": [
+                      { "name": "projectName", "value": "Projeto 1", "prompt": "Identifier" },
+                      { "name": "description", "value": "Descrição 1", "prompt": "Project Description" }
+                ]
+            },
+	    {
+                "href": "/api/projects/{id2}",
+                "data": [
+                      { "name": "projectName", "value": "Projeto 2", "prompt": "Identifier" },
+                      { "name": "shortDescription", "value": "Descrição 2", "prompt": "Project Description" }
+                ]
+            }
+        ]
+    }
+}
+
+/api/projects/{UniqueName} -> 
+    % Get specific project
+    Request:
+    GET /api/project/{UniqueName}
+    Response:
+    {
+     "_links": {
+       "self": { "href": "/projects/1" },
+       "issues": { "href": "/projects/1/issues/" }
+     },
+     "projectName": "Projeto 1",
+     "shortDescription": "Descrição 1",
+    }
+
+
+    % Insert a project
+    Request:
+    PUT /api/project/{UniqueName}
+        body: {
+            shortDescription:
+            states:
+            labels: []
+        }
+
+    % Delete a project
+    Request:
+    DELETE /api/project/{UniqueName}
+
+/api/projects/{UniqueName}/issues ->
+    % Get all issues of a specific project
+    Request:
+    GET /api/projects/{id}/issues
+    Response:
+    {
+    "collection": {
+        "version": "1.0",
+        "href": "/api/projects/1/issues",
+        "items": [
+            {
+                "href": "/api/projects/1/issues/1",
+                "data": [
+                      { "name": "issueId", "value": "1", "prompt": "Identifier" },
+                      { "name": "issueName", "value": "Issue 1", "prompt": "Issue Name" },
+                      { "name": "issueDescription", "value": "Descrição 1", "prompt": "Issue Description" },
+                      { "name": "creationDate", "value": "18/03/2019", "prompt": "Issue Creation Date" },
+                      { "name": "closedDate", "value": "", "prompt": "Issue Closed Date" }
+                ],
+		"links" : [
+        	      {"rel" : "comments", "href" : "/projects/1/issues/1/comments", "prompt" : "Issue Comments"},
+	        ]
+            },
+	    {
+                "href": "/api/projects/1/issues/2",
+                "data": [
+                      { "name": "issueId", "value": "2", "prompt": "Identifier" },
+                      { "name": "issueName", "value": "Issue 2", "prompt": "Issue Name" },
+                      { "name": "issueDescription", "value": "Descrição 2", "prompt": "Issue Description" },
+                      { "name": "creationDate", "value": "18/03/2019", "prompt": "Issue Creation Date" },
+                      { "name": "closedDate", "value": "", "prompt": "Issue Closed Date" }
+                ],
+		"links" : [
+        	      {"rel" : "comments", "href" : "/projects/1/issues/2/comments", "prompt" : "Issue Comments"},
+	        ]
+            }
+        ]
+    }
+}
+
+/api/projects/{UniqueName}/issues/{id} ->
+    % Get a specific issue
+    Request:
+    GET - /api/projects/{UniqueName}/issues/{id}
+    Response:
+    {
+    	"_links": {
+        "self": { "href": "/projects/1/issues/1" },
+        "parent": { "href": "/projects/1" },
+        "comments": { "href": "/projects/1/issues/1/comments" }
+     },
+     "_embedded": {
+     	"comments": [
+
+        ]
+     },
+     "issueId": 1,
+     "issueName": "Issue 1",
+     "issueDescription": "Descrição 1",
+     "state": "",
+     "labels
+     "creationDate": "18/03/2019",
+     "closedDate": ""
+   }
+
+    % Insert an issue
+    PUT - /api/projects/{UniqueName}/issues/{id}
+        body: {
+            name:
+            shortDescription:
+            creationDate:
+            closeDate?:
+            labels:[] 
+        }
+
+/api/projects/{UniqueName}/issues/{id}/comments
+    % Get all comments from an issue
+    Request:
+    GET - /api/projects/{UniqueName}/issues/{id}/comments
+    Response:
+    {
+    "collection": {
+        "version": "1.0",
+        "href": "/api/projects/1/issues/comments",
+        "items": [
+            {
+                "data": [
+		      { "name": "commentId", "value": "1", "prompt": Identifier" },
+                      { "name": "shortText", "value": "Comment 1", "prompt": "Short Text" },
+                ],
+            },
+	    {
+                "data": [
+		      { "name": "commentId", "value": "2", "prompt": Identifier" },
+                      { "name": "shortText", "value": "Comment 2", "prompt": "Short Text" },
+                ],
+            }
+        ]
+    }
+
+    
+    % Insert a comment to an issue
+    POST - /api/projects/{UniqueName}/issues/{id}/comments
+        body: {
+            comment:
+        }
+-----------------------------------------------------------        
