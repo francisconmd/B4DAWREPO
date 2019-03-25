@@ -1,0 +1,26 @@
+{
+    "name": "testeName",
+    "description": "testeDescription",
+    "labels": [{
+            "value": "label1"
+        },
+        {
+            "value": "label2"
+        }
+    ],
+    "states": [{
+            "value": "state1"
+        },
+        {
+            "value": "state2"
+        }
+    ],
+    "statesTransistions": [{
+        "curr": {
+            "value": "state1"
+        },
+        "next": {
+            "value": "state2"
+        }
+    }]
+}
